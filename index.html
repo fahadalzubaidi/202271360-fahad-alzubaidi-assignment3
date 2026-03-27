@@ -26,6 +26,7 @@
                 <li><a href="#home" class="nav-link">About Me</a></li>
                 <li><a href="#projects" class="nav-link">Projects</a></li>
                 <li><a href="#skills" class="nav-link">Skills</a></li>
+                <li><a href="#github" class="nav-link">Activity</a></li>
                 <li><a href="#contact" class="nav-link">Contact</a></li>
             </ul>
             <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
@@ -122,6 +123,7 @@
                     <div class="mouse"></div>
                 </a>
             </div>
+        </div>
     </section>
 
     <!-- Projects Section -->
@@ -129,9 +131,23 @@
         <div class="container">
             <h2 class="section-title">Featured Projects</h2>
             <p class="section-subtitle">A showcase of my recent work and creative endeavors</p>
-            <div class="projects-grid">
+            
+            <div class="projects-filter">
+                <div class="search-wrapper">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="search-icon"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <input type="text" id="projectSearch" placeholder="Search projects by name, technology, or description..." aria-label="Search projects">
+                </div>
+                <div class="filter-buttons" id="filterButtons">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="machine-learning">Machine Learning</button>
+                    <button class="filter-btn" data-filter="web-development">Web Development</button>
+                    <button class="filter-btn" data-filter="automation">Automation</button>
+                </div>
+            </div>
+
+            <div class="projects-grid" id="projectsGrid">
                 <!-- Project 1 -->
-                <div class="project-card">
+                <div class="project-card" data-category="machine-learning">
                     <div class="project-image">
                         <img src="assets/images/project1.jpg" alt="Obesity Classification ML Model">
                     </div>
@@ -151,7 +167,7 @@
                 </div>
 
                 <!-- Project 2 -->
-                <div class="project-card">
+                <div class="project-card" data-category="automation">
                     <div class="project-image">
                         <img src="assets/images/project2.jpg" alt="Inventory Management System">
                     </div>
@@ -171,7 +187,7 @@
                 </div>
 
                 <!-- Project 3 -->
-                <div class="project-card">
+                <div class="project-card" data-category="web-development">
                     <div class="project-image">
                         <img src="assets/images/project3.jpg" alt="KISEF Forum Website">
                     </div>
@@ -242,6 +258,23 @@
                 <div class="skill-card">
                     <div class="skill-icon">📊</div>
                     <h3 class="skill-name">Google Apps Script</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- GitHub Activity Section -->
+    <section id="github" class="github">
+        <div class="container">
+            <div class="github-badge">📂 REAL-TIME DATA</div>
+            <h2 class="section-title">Latest Repositories</h2>
+            <p class="section-subtitle">Dynamically fetched from my GitHub API for the most up-to-date activity</p>
+            
+            <div id="github-repos-container" class="github-repos-grid">
+                <!-- Data will be loaded here via JS -->
+                <div class="loading-state">
+                    <div class="loader"></div>
+                    <p>Accessing GitHub API...</p>
                 </div>
             </div>
         </div>

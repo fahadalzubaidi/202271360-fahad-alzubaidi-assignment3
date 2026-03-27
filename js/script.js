@@ -126,33 +126,51 @@ const formStatus = document.getElementById('formStatus');
 contactForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
+    // Reset previous error states
+    const inputs = contactForm.querySelectorAll('input, textarea');
+    inputs.forEach(input => input.classList.remove('is-invalid'));
+
     // Get form values
-    const name = document.getElementById('name').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const message = document.getElementById('message').value.trim();
+    const nameInput = document.getElementById('name');
+    const emailInput = document.getElementById('email');
+    const messageInput = document.getElementById('message');
+    
+    const name = nameInput.value.trim();
+    const email = emailInput.value.trim();
+    const message = messageInput.value.trim();
 
     // Validate form
-    if (!name || !email || !message) {
-        showFormStatus('Please fill in all fields', 'error');
-        return;
+    let hasError = false;
+    
+    if (!name) { 
+        nameInput.classList.add('is-invalid'); 
+        hasError = true; 
+    }
+    if (!message) { 
+        messageInput.classList.add('is-invalid'); 
+        hasError = true; 
+    }
+    
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email || !emailRegex.test(email)) {
+        emailInput.classList.add('is-invalid');
+        hasError = true;
     }
 
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-        showFormStatus('Please enter a valid email address', 'error');
+    if (hasError) {
+        showFormStatus('Please fill in all fields correctly before sending.', 'error');
         return;
     }
 
     // Simulate form submission
     const submitBtn = contactForm.querySelector('.btn-submit');
     const originalText = submitBtn.textContent;
-    submitBtn.textContent = 'Sending...';
+    submitBtn.textContent = 'Sending Message...';
     submitBtn.disabled = true;
 
     // Simulate API call delay
     setTimeout(() => {
-        showFormStatus('Message sent successfully! I\'ll get back to you soon.', 'success');
+        showFormStatus('❤️ Success! Message sent successfully. I\'ll get back to you soon.', 'success');
         contactForm.reset();
         submitBtn.textContent = originalText;
         submitBtn.disabled = false;
@@ -164,10 +182,190 @@ contactForm.addEventListener('submit', (e) => {
     }, 1500);
 });
 
+// Real-time clearance of error states
+contactForm.querySelectorAll('input, textarea').forEach(input => {
+    input.addEventListener('input', () => {
+        if (input.classList.contains('is-invalid')) {
+            input.classList.remove('is-invalid');
+            if (!contactForm.querySelector('.is-invalid')) {
+                formStatus.style.display = 'none';
+            }
+        }
+    });
+});
+
 function showFormStatus(message, type) {
     formStatus.textContent = message;
     formStatus.className = `form-status ${type}`;
     formStatus.style.display = 'block';
+}
+
+// ===========================================
+// PROJECT FILTERING (Search & Category Buttons)
+// ===========================================
+const projectSearch = document.getElementById('projectSearch');
+const filterBtns = document.querySelectorAll('.filter-btn');
+const projectCards = document.querySelectorAll('.project-card');
+
+function filterProjects() {
+    const searchTerm = projectSearch.value.toLowerCase();
+    const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
+
+    projectCards.forEach(card => {
+        const title = card.querySelector('.project-title').textContent.toLowerCase();
+        const description = card.querySelector('.project-description').textContent.toLowerCase();
+        const tags = Array.from(card.querySelectorAll('.tag')).map(tag => tag.textContent.toLowerCase());
+        const category = card.dataset.category;
+
+        const matchesSearch = title.includes(searchTerm) || 
+                            description.includes(searchTerm) || 
+                            tags.some(tag => tag.includes(searchTerm));
+        
+        const matchesCategory = activeFilter === 'all' || category === activeFilter;
+
+        if (matchesSearch && matchesCategory) {
+            card.style.display = 'block';
+            setTimeout(() => {
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 10);
+        } else {
+            card.style.display = 'none';
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+        }
+    });
+
+    // Show empty message if no projects match
+    const visibleCards = Array.from(projectCards).filter(card => card.style.display !== 'none');
+    let emptyMessage = document.getElementById('emptySearchMessage');
+    
+    if (visibleCards.length === 0) {
+        if (!emptyMessage) {
+            emptyMessage = document.createElement('div');
+            emptyMessage.id = 'emptySearchMessage';
+            emptyMessage.innerHTML = `
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🔍</div>
+                <h3>No matches found</h3>
+                <p>Try adjusting your search or filters to find what you're looking for.</p>
+            `;
+            emptyMessage.style.textAlign = 'center';
+            emptyMessage.style.padding = '3rem 1rem';
+            emptyMessage.style.gridColumn = '1 / -1';
+            emptyMessage.style.color = 'var(--color-text-tertiary)';
+            document.getElementById('projectsGrid').appendChild(emptyMessage);
+        }
+        emptyMessage.style.display = 'block';
+    } else if (emptyMessage) {
+        emptyMessage.style.display = 'none';
+    }
+}
+
+// Search input listener
+if (projectSearch) {
+    projectSearch.addEventListener('input', filterProjects);
+}
+
+// Filter button listeners
+filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        // Update active class
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        // Apply filter
+        filterProjects();
+    });
+});
+
+// ===========================================
+// GITHUB API DATA FETCHING
+// ===========================================
+async function fetchGitHubRepos() {
+    const container = document.getElementById('github-repos-container');
+    const username = 'fahadalzubaidi'; 
+    
+    try {
+        const response = await fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=6`);
+        
+        if (!response.ok) {
+            throw new Error(`GitHub API returned ${response.status}`);
+        }
+        
+        const repos = await response.json();
+        
+        if (repos.length === 0) {
+            container.innerHTML = '<div class="error-state"><p>No public repositories found.</p></div>';
+            return;
+        }
+
+        // Clear loading state
+        container.innerHTML = '';
+
+        repos.forEach((repo, index) => {
+            const card = document.createElement('div');
+            card.className = 'github-repo-card';
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = `all 0.5s ease ${index * 0.1}s`;
+
+            card.innerHTML = `
+                <div class="repo-header">
+                    <span class="repo-icon">📁</span>
+                    <div class="repo-stat">
+                        <span>⭐</span>
+                        <span>${repo.stargazers_count}</span>
+                    </div>
+                </div>
+                <h3 class="repo-name">${repo.name}</h3>
+                <p class="repo-description">${repo.description || 'No description provided.'}</p>
+                <div class="repo-stats">
+                    <div class="repo-stat">
+                        <span>🔤</span>
+                        <span>${repo.language || 'Mixed'}</span>
+                    </div>
+                    <div class="repo-stat">
+                        <span>🍴</span>
+                        <span>${repo.forks_count}</span>
+                    </div>
+                    <a href="${repo.html_url}" target="_blank" class="repo-link" aria-label="View ${repo.name} on GitHub">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                    </a>
+                </div>
+            `;
+
+            container.appendChild(card);
+            
+            // Trigger animation
+            setTimeout(() => {
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 100);
+        });
+
+    } catch (error) {
+        console.error('Error fetching GitHub repos:', error);
+        container.innerHTML = `
+            <div class="error-state">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                <p>Failed to load GitHub activity. Please check your connection or try again later.</p>
+                <button onclick="fetchGitHubRepos()" class="btn btn-secondary" style="margin-top: 1rem; padding: 0.5rem 1rem; font-size: 0.8rem;">Retry</button>
+            </div>
+        `;
+    }
+}
+
+// Initialize fetch when section is visible
+const githubSection = document.getElementById('github');
+if (githubSection) {
+    const githubObserver = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) {
+            fetchGitHubRepos();
+            githubObserver.unobserve(githubSection);
+        }
+    }, { threshold: 0.1 });
+    
+    githubObserver.observe(githubSection);
 }
 
 // ===========================================
@@ -194,7 +392,7 @@ document.querySelectorAll('.skill-item').forEach(item => {
 // ===========================================
 // SCROLL REVEAL ANIMATIONS
 // ===========================================
-const revealElements = document.querySelectorAll('.project-card, .stat-card, .skill-category');
+const revealElements = document.querySelectorAll('.project-card, .stat-card, .skill-category, .skill-card, .info-item, .github-badge');
 
 const revealObserver = new IntersectionObserver((entries) => {
     entries.forEach((entry, index) => {

@@ -1,63 +1,41 @@
 # AI Usage Report
 
-## Tools used & use cases
+This report outlines the use of Artificial Intelligence (AI) tools during the development of "SWE363 - Assignment 2: Portfolio Enhancements."
 
-### Google Antigravity
+## 1. Tools Used & Use Cases
 
-- Drafted the initial HTML structure based on the assignment requirements.
-- Helped plan and implement the responsive CSS design system with modern features.
-- Suggested a dark-first theme approach and the light-mode toggle logic.
-- Code generation for HTML/CSS/JS including form validation and smooth scrolling.
-- Documentation support for README and AI usage reporting.
-- UI/UX design suggestions for layout, typography, color schemes, and theming.
-- Provided comprehensive debugging and optimization assistance.
-- Generated semantic HTML with proper accessibility attributes.
+### Antigravity (Powered by Google Gemini)
+*   **Use Case: Component Implementation**
+    *   Used to plan and implement the **Dynamic Project Filter**. The AI helped generate the logic for filtering projects by category and the live search functionality.
+*   **Use Case: API Integration**
+    *   Used to integrate the **GitHub repositories API**. The tool provided the `async/await` fetch logic and suggested the structure for real-time repository cards.
+*   **Use Case: Design Enhancements**
+    *   The AI suggested premium CSS tokens (gradients, glassmorphism) and implemented **IntersectionObserver-based scroll reveals** to make the site feel more dynamic and polished.
+*   **Use Case: Debugging & Refinement**
+    *   Used to ensure form validation was robust and to implement real-time error clearance when the user corrects their input.
 
-### ChatGPT
+## 2. Benefits & Challenges
 
-- Provided concept clarification for advanced CSS techniques (Grid, Flexbox, custom properties).
-- Assisted in debugging JavaScript logic and syntax errors.
-- Explained modern web development best practices and patterns.
-- Offered quick lookups for HTML/CSS/JavaScript syntax questions.
-- Suggested design improvements and color palette recommendations.
+### Benefits
+*   **Speed & Efficiency**: Writing complex JavaScript logic (like filtering two sets of data simultaneously) was significantly faster than manual coding.
+*   **Premium Aesthetics**: The AI provided sophisticated CSS suggestions (transition timing functions, shadows) that improved the visual quality of the project beyond basic CSS.
+*   **Problem-Solving**: It provided clear patterns for handling asynchronous API requests, particularly the "Loading" and "Retry" feedback loops.
 
-## Benefits & challenges
+### Challenges
+*   **Design Consistency**: Initially, AI-generated components used generic styles. I had to explicitly direct it to use my existing CSS variables (e.g., `--color-primary`, `--spacing-md`) to maintain a cohesive look.
+*   **Context Management**: While implementing new features, I had to be careful that the AI didn't overwrite or duplicate existing logic like the `IntersectionObserver` already present in the codebase.
 
-**Benefits:**
+## 3. Learning Outcomes
 
-- Faster layout planning, clearer section structure, and quicker iteration on styling ideas.
-- Real-time code suggestions reduced development time significantly.
-- Context-aware completions streamlined JavaScript functionality implementation.
-- Improved code consistency through AI-suggested patterns and best practices.
-- Enhanced understanding of modern web development techniques.
-- Accelerated learning curve for CSS animations, custom properties, and responsive design.
+*   **Asynchronous JavaScript**: I deepened my understanding of the `fetch` API, particularly how to handle different response states (Loading, Success, and Error) in an "agentic" way.
+*   **Intersection Observer API**: Learned how to trigger animations only when elements enter the viewport, which optimizes browser performance.
+*   **API Data Normalization**: I gained experience in mapping JSON data from a public API (GitHub) into custom HTML components.
+*   **Logic Abstraction**: Improved my ability to write reusable functions (e.g., `filterProjects()`) that handle multiple inputs like search text and category buttons.
 
-**Challenges:**
+## 4. Responsible Use & Modifications
 
-- Needed to review and refine AI-generated code to match my specific requirements and ensure accuracy.
-- Sometimes AI tools got stuck on simple errors or didn't do exactly what was intended.
-- Required careful verification to ensure browser compatibility and accessibility standards.
-- Had to balance AI assistance with personal learning to avoid over-reliance.
-- Some suggestions were too generic and required customization for uniqueness.
-
-## Learning outcomes
-
-- Improved understanding of CSS variables for theming and responsive grid layouts.
-- Reinforced how to organize a small front-end project with clean structure and accessible markup.
-- Learned modern CSS techniques including custom properties, backdrop-filter, and CSS animations.
-- Enhanced knowledge in JavaScript best practices including event handling, DOM manipulation, and localStorage API.
-- Improved appreciation for semantic HTML and accessibility standards (ARIA labels, semantic elements).
-- Learned efficient workflow strategies: using AI to accelerate development while maintaining code quality through careful review.
-- Developed prompt engineering skills to get better results from AI tools.
-- Understanding of how to critically evaluate and modify AI-generated suggestions.
-
-## Responsible use & modifications
-
-- Reviewed all AI-generated code for correctness, efficiency, and browser compatibility.
-- Refactored verbose or generic completions into cleaner, more optimized logic.
-- Made final design decisions independently to ensure the project reflects my own style and creativity.
-- Validated CSS transitions and JavaScript functionality work across different browsers and devices.
-- Tested theme toggle, form validation, and smooth scrolling features thoroughly.
-- Customized color schemes, spacing, and layouts to create a unique portfolio design.
-- Ensured the final submission reflects my own work and maintains academic integrity.
-- Used AI as a learning tool rather than a replacement for understanding the code.
+To ensure academic integrity and originality:
+*   **Manual Review**: Every line of code suggested by the AI was reviewed for correctness and fit within the project structure.
+*   **Logic Modifications**: I modified the filtering logic to prioritize search matches over category matches to provide a more intuitive search experience.
+*   **Design Token Integration**: I manually mapped all AI-generated styles to use the project's predefined CSS custom properties (Design Tokens) to ensure a consistent design system.
+*   **Original Improvements**: I added custom "empty state" icons and specific success/error messages that weren't part of the initial AI suggestions, ensuring the user feedback was personalized and helpful.

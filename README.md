@@ -1,20 +1,32 @@
-# Assignment 1 Personal Portfolio
+# Personal Portfolio | SWE363 - Assignment 2
 
-## Project description
-A responsive personal portfolio website for Fahad Alzubaidi, built with HTML, CSS, and JavaScript.
+## Project Description
+A premium, highly interactive personal portfolio website for **Fahad Alzubaidi**, enhanced with dynamic content, real-time data fetching, and sophisticated animations.
 
-## Project overview
-- Dark-first theme with a light-mode toggle
-- About, Projects, Skills, and Contact sections
-- Responsive layout for desktop, tablet, and mobile
-- Simple form interaction (client-side only)
+## Key Features (Assignment 2 Updates)
+- **Dynamic Content Filtering**: Real-time project search and category filtering for a seamless user experience.
+*   **Live Data Handling**: Integration with the **GitHub API** to fetch and display repository activity dynamically.
+*   **Premium Animations**: Staggered scroll-reveal effects and spring-based UI transitions.
+*   **Robust Feedback Loops**: Comprehensive form validation, loading indicators, and informative empty/error states.
+*   **Responsive Design**: Optimized for all devices, from mobile phones to high-resolution desktops.
 
-## Setup (run locally)
-1. Open `index.html` in any modern browser.
-2. No build steps or server required.
+## Project Structure
+- `index.html`: Main application entry point.
+- `css/styles.css`: Centralized design system and animations.
+- `js/script.js`: Core logic for filtering, API fetching, and interactivity.
+- `docs/`: Technical documentation and AI usage reports.
 
-## AI usage (short summary)
-This project used Google Antigravity to help structure the layout, plan the CSS theme and JavaScript functionality, in addition to ChatGPT for concept clarification and debugging. Full details are in `docs/ai-usage-report.md`.
+## Setup & Usage
+1.  **Clone the Repository**: Download the project files to your local machine.
+2.  **Run Locally**: Simply open `index.html` in any modern web browser (Edge, Chrome, Safari).
+3.  **Dependencies**: None. The project uses vanilla JS and CSS for maximum compatibility and performance.
 
-## Live deployment link
-https://fahadalzubaidi.github.io/202271360-fahad-alzubaidi-assignment1/
+## AI Integration
+This project was developed using **Antigravity (powered by Google Gemini)** as an agentic coding assistant. AI was used for:
+- Architecture planning and logic implementation.
+- API data normalization and integration.
+- Advanced CSS animation timing and design tokens.
+*Full transparency on AI usage can be found in [docs/ai-usage-report.md](docs/ai-usage-report.md).*
+
+## Live Deployment
+[View Live Portfolio](https://fahadalzubaidi.github.io/202271360-fahad-alzubaidi-assignment1/)
