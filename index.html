@@ -111,10 +111,19 @@
                         </svg>
                     </a>
                 </div>
+                <!-- Visitor Name & Timer Widget (State Management) -->
+                <div class="visitor-widget" id="visitorWidget">
+                    <div id="visitorGreeting" class="visitor-greeting" style="display:none;"></div>
+                    <div class="visitor-input-row" id="visitorInputRow">
+                        <input type="text" id="visitorNameInput" placeholder="Enter your name for a personal greeting" aria-label="Your name" maxlength="40">
+                        <button id="visitorNameBtn" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size:0.85rem;">Say Hi 👋</button>
+                    </div>
+                    <div class="visit-timer" id="visitTimer">⏱ Time on site: <span id="timerDisplay">0s</span></div>
+                </div>
             </div>
             <div class="hero-image">
                 <div class="image-wrapper">
-                    <img src="assets/images/profile.jpg" alt="Profile" class="profile-img">
+                    <img src="assets/images/profile.jpg" alt="Profile" class="profile-img" loading="lazy">
                     <div class="image-glow"></div>
                 </div>
             </div>
@@ -137,19 +146,32 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="search-icon"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                     <input type="text" id="projectSearch" placeholder="Search projects by name, technology, or description..." aria-label="Search projects">
                 </div>
-                <div class="filter-buttons" id="filterButtons">
-                    <button class="filter-btn active" data-filter="all">All</button>
-                    <button class="filter-btn" data-filter="machine-learning">Machine Learning</button>
-                    <button class="filter-btn" data-filter="web-development">Web Development</button>
-                    <button class="filter-btn" data-filter="automation">Automation</button>
+                <div class="filter-sort-row">
+                    <div class="filter-buttons" id="filterButtons">
+                        <button class="filter-btn active" data-filter="all">All</button>
+                        <button class="filter-btn" data-filter="machine-learning">Machine Learning</button>
+                        <button class="filter-btn" data-filter="web-development">Web Development</button>
+                        <button class="filter-btn" data-filter="automation">Automation</button>
+                    </div>
+                    <!-- Sort Dropdown (Complex Logic: filter + sort) -->
+                    <div class="sort-wrapper">
+                        <label for="projectSort" class="sort-label">Sort by:</label>
+                        <select id="projectSort" aria-label="Sort projects">
+                            <option value="default">Default</option>
+                            <option value="title-asc">Title A → Z</option>
+                            <option value="title-desc">Title Z → A</option>
+                            <option value="tags-asc">Fewest Tags</option>
+                            <option value="tags-desc">Most Tags</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 
             <div class="projects-grid" id="projectsGrid">
                 <!-- Project 1 -->
-                <div class="project-card" data-category="machine-learning">
+                <div class="project-card" data-category="machine-learning" data-date="2024-01">
                     <div class="project-image">
-                        <img src="assets/images/project1.jpg" alt="Obesity Classification ML Model">
+                        <img src="assets/images/project1.jpg" alt="Obesity Classification ML Model" loading="lazy">
                     </div>
                     <div class="project-content">
                         <h3 class="project-title">Obesity Classification Using Machine Learning</h3>
@@ -167,9 +189,9 @@
                 </div>
 
                 <!-- Project 2 -->
-                <div class="project-card" data-category="automation">
+                <div class="project-card" data-category="automation" data-date="2024-06">
                     <div class="project-image">
-                        <img src="assets/images/project2.jpg" alt="Inventory Management System">
+                        <img src="assets/images/project2.jpg" alt="Inventory Management System" loading="lazy">
                     </div>
                     <div class="project-content">
                         <h3 class="project-title">Inventory Management System</h3>
@@ -187,9 +209,9 @@
                 </div>
 
                 <!-- Project 3 -->
-                <div class="project-card" data-category="web-development">
+                <div class="project-card" data-category="web-development" data-date="2023-09">
                     <div class="project-image">
-                        <img src="assets/images/project3.jpg" alt="KISEF Forum Website">
+                        <img src="assets/images/project3.jpg" alt="KISEF Forum Website" loading="lazy">
                     </div>
                     <div class="project-content">
                         <h3 class="project-title">KISEF Forum Website</h3>

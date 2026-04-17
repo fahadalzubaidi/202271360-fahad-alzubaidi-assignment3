@@ -201,15 +201,37 @@ function showFormStatus(message, type) {
 }
 
 // ===========================================
-// PROJECT FILTERING (Search & Category Buttons)
+// PROJECT FILTERING AND SORTING
 // ===========================================
 const projectSearch = document.getElementById('projectSearch');
 const filterBtns = document.querySelectorAll('.filter-btn');
-const projectCards = document.querySelectorAll('.project-card');
+const projectSort = document.getElementById('projectSort');
 
+/**
+ * Returns an array of all project card elements from the DOM.
+ * Using a live query because cards are static in this project.
+ */
+function getProjectCards() {
+    return Array.from(document.querySelectorAll('.project-card'));
+}
+
+/**
+ * Core filter + sort function.
+ * 1. Reads the current search term, active category filter, and sort order.
+ * 2. Hides cards that don't match; shows matching ones.
+ * 3. Re-orders visible cards in the grid according to the sort selection.
+ */
 function filterProjects() {
     const searchTerm = projectSearch.value.toLowerCase();
     const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
+    const sortValue = projectSort ? projectSort.value : 'default';
+
+    const projectCards = getProjectCards();
+    const grid = document.getElementById('projectsGrid');
+
+    // --- Step 1: Determine which cards match filter + search ---
+    const matchingCards = [];
+    const hiddenCards = [];
 
     projectCards.forEach(card => {
         const title = card.querySelector('.project-title').textContent.toLowerCase();
@@ -217,47 +239,73 @@ function filterProjects() {
         const tags = Array.from(card.querySelectorAll('.tag')).map(tag => tag.textContent.toLowerCase());
         const category = card.dataset.category;
 
-        const matchesSearch = title.includes(searchTerm) || 
-                            description.includes(searchTerm) || 
-                            tags.some(tag => tag.includes(searchTerm));
-        
+        const matchesSearch = !searchTerm ||
+            title.includes(searchTerm) ||
+            description.includes(searchTerm) ||
+            tags.some(tag => tag.includes(searchTerm));
+
         const matchesCategory = activeFilter === 'all' || category === activeFilter;
 
         if (matchesSearch && matchesCategory) {
-            card.style.display = 'block';
-            setTimeout(() => {
-                card.style.opacity = '1';
-                card.style.transform = 'translateY(0)';
-            }, 10);
+            matchingCards.push(card);
         } else {
-            card.style.display = 'none';
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(20px)';
+            hiddenCards.push(card);
         }
     });
 
-    // Show empty message if no projects match
-    const visibleCards = Array.from(projectCards).filter(card => card.style.display !== 'none');
-    let emptyMessage = document.getElementById('emptySearchMessage');
-    
-    if (visibleCards.length === 0) {
-        if (!emptyMessage) {
-            emptyMessage = document.createElement('div');
-            emptyMessage.id = 'emptySearchMessage';
-            emptyMessage.innerHTML = `
-                <div style="font-size: 3rem; margin-bottom: 1rem;">🔍</div>
-                <h3>No matches found</h3>
-                <p>Try adjusting your search or filters to find what you're looking for.</p>
-            `;
-            emptyMessage.style.textAlign = 'center';
-            emptyMessage.style.padding = '3rem 1rem';
-            emptyMessage.style.gridColumn = '1 / -1';
-            emptyMessage.style.color = 'var(--color-text-tertiary)';
-            document.getElementById('projectsGrid').appendChild(emptyMessage);
+    // --- Step 2: Sort the matching cards ---
+    matchingCards.sort((a, b) => {
+        const titleA = a.querySelector('.project-title').textContent.trim();
+        const titleB = b.querySelector('.project-title').textContent.trim();
+        const tagsCountA = a.querySelectorAll('.tag').length;
+        const tagsCountB = b.querySelectorAll('.tag').length;
+
+        switch (sortValue) {
+            case 'title-asc':  return titleA.localeCompare(titleB);
+            case 'title-desc': return titleB.localeCompare(titleA);
+            case 'tags-asc':   return tagsCountA - tagsCountB;
+            case 'tags-desc':  return tagsCountB - tagsCountA;
+            default: return 0; // preserve original DOM order
         }
-        emptyMessage.style.display = 'block';
-    } else if (emptyMessage) {
-        emptyMessage.style.display = 'none';
+    });
+
+    // --- Step 3: Re-append all cards in sorted order (matching first, hidden removed) ---
+    // Remove empty-state placeholder temporarily
+    let emptyMessage = document.getElementById('emptySearchMessage');
+    if (emptyMessage) emptyMessage.remove();
+
+    // Re-order cards in the grid
+    [...matchingCards, ...hiddenCards].forEach(card => {
+        grid.appendChild(card);
+    });
+
+    // Show/hide cards with animation
+    hiddenCards.forEach(card => {
+        card.style.display = 'none';
+        card.style.opacity = '0';
+    });
+    matchingCards.forEach(card => {
+        card.style.display = 'block';
+        setTimeout(() => {
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, 10);
+    });
+
+    // --- Step 4: Show empty state if nothing matches ---
+    if (matchingCards.length === 0) {
+        emptyMessage = document.createElement('div');
+        emptyMessage.id = 'emptySearchMessage';
+        emptyMessage.innerHTML = `
+            <div style="font-size: 3rem; margin-bottom: 1rem;">🔍</div>
+            <h3>No matches found</h3>
+            <p>Try adjusting your search or filters to find what you're looking for.</p>
+        `;
+        emptyMessage.style.textAlign = 'center';
+        emptyMessage.style.padding = '3rem 1rem';
+        emptyMessage.style.gridColumn = '1 / -1';
+        emptyMessage.style.color = 'var(--color-text-tertiary)';
+        grid.appendChild(emptyMessage);
     }
 }
 
@@ -266,14 +314,19 @@ if (projectSearch) {
     projectSearch.addEventListener('input', filterProjects);
 }
 
+// Sort dropdown listener
+if (projectSort) {
+    projectSort.addEventListener('change', filterProjects);
+}
+
 // Filter button listeners
 filterBtns.forEach(btn => {
     btn.addEventListener('click', () => {
         // Update active class
         filterBtns.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        
-        // Apply filter
+
+        // Apply filter + sort
         filterProjects();
     });
 });
@@ -369,30 +422,9 @@ if (githubSection) {
 }
 
 // ===========================================
-// ANIMATED SKILL BARS ON SCROLL
-// ===========================================
-const observerOptions = {
-    threshold: 0.3,
-    rootMargin: '0px 0px -100px 0px'
-};
-
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('animate');
-        }
-    });
-}, observerOptions);
-
-// Observe skill sections
-document.querySelectorAll('.skill-item').forEach(item => {
-    observer.observe(item);
-});
-
-// ===========================================
 // SCROLL REVEAL ANIMATIONS
 // ===========================================
-const revealElements = document.querySelectorAll('.project-card, .stat-card, .skill-category, .skill-card, .info-item, .github-badge');
+const revealElements = document.querySelectorAll('.project-card, .skill-card, .info-item, .github-badge');
 
 const revealObserver = new IntersectionObserver((entries) => {
     entries.forEach((entry, index) => {
@@ -517,6 +549,78 @@ if ('IntersectionObserver' in window) {
 
     document.querySelectorAll('img').forEach(img => {
         imageObserver.observe(img);
+    });
+}
+
+// ===========================================
+// VISITOR TIMER — tracks time spent on page
+// ===========================================
+const timerDisplay = document.getElementById('timerDisplay');
+let visitSeconds = 0;
+
+/**
+ * Formats seconds into a human-readable string (e.g. "2m 30s").
+ */
+function formatTime(secs) {
+    if (secs < 60) return `${secs}s`;
+    const m = Math.floor(secs / 60);
+    const s = secs % 60;
+    return `${m}m ${s}s`;
+}
+
+if (timerDisplay) {
+    setInterval(() => {
+        visitSeconds++;
+        timerDisplay.textContent = formatTime(visitSeconds);
+    }, 1000);
+}
+
+// ===========================================
+// VISITOR NAME — state management with localStorage
+// ===========================================
+const visitorNameInput = document.getElementById('visitorNameInput');
+const visitorNameBtn = document.getElementById('visitorNameBtn');
+const visitorGreeting = document.getElementById('visitorGreeting');
+const visitorInputRow = document.getElementById('visitorInputRow');
+
+/**
+ * Shows the personalized greeting and hides the input row.
+ * Stores the name in localStorage for future visits.
+ */
+function showVisitorGreeting(name) {
+    if (!visitorGreeting || !visitorInputRow) return;
+    visitorGreeting.textContent = `👋 Welcome, ${name}! Enjoy browsing my portfolio.`;
+    visitorGreeting.style.display = 'block';
+    visitorInputRow.style.display = 'none';
+}
+
+// Check if visitor already introduced themselves in a previous session
+const savedName = localStorage.getItem('visitorName');
+if (savedName) {
+    showVisitorGreeting(savedName);
+}
+
+// Handle the "Say Hi" button click
+if (visitorNameBtn) {
+    visitorNameBtn.addEventListener('click', () => {
+        const name = visitorNameInput ? visitorNameInput.value.trim() : '';
+        if (!name) {
+            if (visitorNameInput) {
+                visitorNameInput.classList.add('is-invalid');
+                visitorNameInput.placeholder = 'Please enter your name first!';
+            }
+            return;
+        }
+        localStorage.setItem('visitorName', name);
+        showVisitorGreeting(name);
+    });
+}
+
+// Clear invalid state on visitor name input
+if (visitorNameInput) {
+    visitorNameInput.addEventListener('input', () => {
+        visitorNameInput.classList.remove('is-invalid');
+        visitorNameInput.placeholder = 'Enter your name for a personal greeting';
     });
 }
 

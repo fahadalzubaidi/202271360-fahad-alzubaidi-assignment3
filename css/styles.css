@@ -1233,10 +1233,6 @@ section {
         display: none;
     }
 
-    .hero-buttons {
-        justify-content: center;
-    }
-
     .hero-social {
         justify-content: center;
     }
@@ -1248,14 +1244,6 @@ section {
 
     .hero-title {
         font-size: var(--font-size-4xl);
-    }
-
-    .hero-buttons {
-        justify-content: center;
-    }
-
-    .hero-image {
-        order: -1;
     }
 
     .contact-content {
@@ -1278,25 +1266,9 @@ section {
     .github-repos-grid {
         grid-template-columns: 1fr;
     }
-}
-
-@media (max-width: 480px) {
-    .hero-title {
-        font-size: var(--font-size-3xl);
-    }
-
-    .hero-subtitle {
-        font-size: var(--font-size-xl);
-    }
-
-}
-
-/* ===== Responsive Fix ===== */
-@media (max-width: 768px) {
 
     .hero {
         flex-direction: column-reverse;
-        /* Text first, image second */
         text-align: center;
     }
 
@@ -1332,12 +1304,147 @@ section {
         flex-direction: column;
         gap: 15px;
     }
-
 }
 
-/* Very Small Screens - Single Column for Skills */
 @media (max-width: 480px) {
+    .hero-title {
+        font-size: var(--font-size-3xl);
+    }
+
+    .hero-subtitle {
+        font-size: var(--font-size-xl);
+    }
+
     .skills-grid {
         grid-template-columns: 1fr;
     }
+}
+
+/* ===========================================
+   MISSING STATES — Form Validation & Nav Active
+   =========================================== */
+
+/* Red border on invalid inputs (used by both contact form and visitor widget) */
+.is-invalid {
+    border-color: hsl(0, 76%, 55%) !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
+    animation: shake 0.3s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25%       { transform: translateX(-6px); }
+    75%       { transform: translateX(6px); }
+}
+
+/* Active nav link highlight */
+.nav-link.active {
+    color: var(--color-primary) !important;
+}
+
+.nav-link.active::after {
+    width: 100%;
+}
+
+/* ===========================================
+   PROJECTS — Sort + Filter Row
+   =========================================== */
+.filter-sort-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-md);
+    width: 100%;
+}
+
+.sort-wrapper {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.sort-label {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+}
+
+#projectSort {
+    padding: var(--spacing-xs) var(--spacing-md);
+    background: var(--color-bg-secondary);
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-text-primary);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    font-family: inherit;
+}
+
+#projectSort:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* ===========================================
+   VISITOR WIDGET — timer + name greeting
+   =========================================== */
+.visitor-widget {
+    margin-top: var(--spacing-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    animation: fadeIn 0.8s ease-out 0.7s backwards;
+}
+
+.visitor-greeting {
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    color: var(--color-primary);
+    background: var(--color-bg-secondary);
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xs) var(--spacing-md);
+    width: fit-content;
+}
+
+.visitor-input-row {
+    display: flex;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+    max-width: 480px;
+}
+
+.visitor-input-row input {
+    flex: 1;
+    min-width: 180px;
+    padding: var(--spacing-xs) var(--spacing-md);
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-secondary);
+    color: var(--color-text-primary);
+    font-family: inherit;
+    font-size: var(--font-size-sm);
+    transition: all var(--transition-base);
+}
+
+.visitor-input-row input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.visit-timer {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-tertiary);
+    font-variant-numeric: tabular-nums;
+}
+
+.visit-timer span {
+    font-weight: 700;
+    color: var(--color-primary);
 }
