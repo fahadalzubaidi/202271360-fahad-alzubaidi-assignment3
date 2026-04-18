@@ -84,4 +84,4 @@ This project was developed using **Antigravity (powered by Google Gemini)** as a
 *Full transparency on AI usage can be found in [docs/ai-usage-report.md](docs/ai-usage-report.md).*
 
 ## Live Deployment
-[View Live Portfolio](https://fahadalzubaidi.github.io/202271360-fahad-alzubaidi-assignment1/)
+[View Live Portfolio](https://fahadalzubaidi.github.io/202271360-fahad-alzubaidi-assignment3/)
